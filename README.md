@@ -16,6 +16,20 @@ Analisar o comportamento migratório no ES, identificando padrões por nacionali
 - Quarto (relatórios)
 - GitHub Pages (publicação)
 
+## ⚙️ Como executar o projeto
+
+Este projeto utiliza o gerenciador de dependências `uv`.
+
+### 1. Criar ambiente virtual
+uv venv
+
+### 2. Instalar dependências
+uv sync
+
+### 3. Renderizar o relatório
+quarto render notebook/relatorio.qmd
+
+
 ## 🌐 Acesse o relatório
 👉 https://lucas93barros.github.io/MIGRACAO_PF/
 
