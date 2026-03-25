@@ -6,6 +6,8 @@ lang: pt-BR
 format: 
     html:
         theme: cosmo
+        output-file: "index.html"
+        embed-resources: true
         toc: true
         toc-depth: 2
         number-sections: true
