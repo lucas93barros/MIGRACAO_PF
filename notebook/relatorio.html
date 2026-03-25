@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Seu nome">
+<meta name="author" content="Lucas Barros">
 
-<title>Análise de Migração - Polícia Federal</title>
+<title>Destino Espírito Santo: um breve estudo sobre imigração a partir de dados da Polícia Federal.</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,7 +27,7 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="relatorio_files/libs/clipboard/clipboard.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="relatorio_files/libs/clipboard/clipboard.min.js"></script>
 <script src="relatorio_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="relatorio_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="relatorio_files/libs/quarto-html/popper.min.js"></script>
@@ -37,20 +37,39 @@ ul.task-list li input[type="checkbox"] {
 <link href="relatorio_files/libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="relatorio_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="relatorio_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="relatorio_files/libs/bootstrap/bootstrap-efbb37e9afcc02144ebbc7afd12a776f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="relatorio_files/libs/bootstrap/bootstrap-67270d1595a62d14f123c043d4fb2f18.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introdução" id="toc-introdução" class="nav-link active" data-scroll-target="#introdução"><span class="header-section-number">1</span> Introdução</a></li>
+  <li><a href="#carregamento-dos-dados" id="toc-carregamento-dos-dados" class="nav-link" data-scroll-target="#carregamento-dos-dados"><span class="header-section-number">2</span> Carregamento dos dados</a>
+  <ul class="collapse">
+  <li><a href="#tratamento-e-consolidação-dos-dados" id="toc-tratamento-e-consolidação-dos-dados" class="nav-link" data-scroll-target="#tratamento-e-consolidação-dos-dados"><span class="header-section-number">2.1</span> Tratamento e Consolidação dos Dados</a></li>
+  <li><a href="#construção-da-variável-de-fluxo-migratório" id="toc-construção-da-variável-de-fluxo-migratório" class="nav-link" data-scroll-target="#construção-da-variável-de-fluxo-migratório"><span class="header-section-number">2.2</span> Construção da Variável de Fluxo Migratório</a></li>
+  <li><a href="#classificação-do-comportamento-migratório" id="toc-classificação-do-comportamento-migratório" class="nav-link" data-scroll-target="#classificação-do-comportamento-migratório"><span class="header-section-number">2.3</span> Classificação do Comportamento Migratório</a></li>
+  </ul></li>
+  <li><a href="#análise-descritiva" id="toc-análise-descritiva" class="nav-link" data-scroll-target="#análise-descritiva"><span class="header-section-number">3</span> Análise Descritiva</a></li>
+  <li><a href="#análise-de-migração-para-o-espírito-santo" id="toc-análise-de-migração-para-o-espírito-santo" class="nav-link" data-scroll-target="#análise-de-migração-para-o-espírito-santo"><span class="header-section-number">4</span> Análise de Migração para o Espírito Santo</a></li>
+  </ul>
+</nav>
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Análise de Migração - Polícia Federal</h1>
+<h1 class="title">Destino Espírito Santo: um breve estudo sobre imigração a partir de dados da Polícia Federal.</h1>
 </div>
 
 
@@ -58,9 +77,9 @@ ul.task-list li input[type="checkbox"] {
 <div class="quarto-title-meta">
 
     <div>
-    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Autor</div>
     <div class="quarto-title-meta-contents">
-             <p>Seu nome </p>
+             <p>Lucas Barros </p>
           </div>
   </div>
     
@@ -73,12 +92,578 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="introdução" class="level2">
-<h2 class="anchored" data-anchor-id="introdução">Introdução</h2>
-<p>Este relatório apresenta a análise dos dados do SISMIGRA…</p>
+<section id="introdução" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introdução</h1>
+<p>Este relatório apresenta uma análise dos dados de migração da Polícia Federal (SISMIGRA), com foco no estado do Espírito Santo.</p>
+<p>O presente relatório possui apenas objetivo didático, para fins de estudo de Análise Exploratória de Dados (EDA) e não deve ser utilizado para fins comerciais ou de tomada de decisão.</p>
+<p>Os dados utilizados neste relatório foram obtidos a partir do portal de dados abertos do governo brasileiro, e estão disponíveis para consulta pública, apartir do link (https://dados.gov.br/dados/conjuntos-dados/sismigra—sistema-de-registro-nacional-migratorio)</p>
+<p>— <strong>Fonte dos dados</strong>: SISMIGRA - Sistema de Registro Nacional Migratório</p>
+<p>— <strong>Período analisado</strong>: Janeiro e Fevereiro de 2026</p>
+<hr>
 </section>
-<section id="carregamento-dos-dados" class="level2">
-<h2 class="anchored" data-anchor-id="carregamento-dos-dados">Carregamento dos dados</h2>
+<section id="carregamento-dos-dados" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Carregamento dos dados</h1>
+<p>Os dados foram carregados a partir de arquivos CSV disponibilizados no portal de dados abertos:</p>
+<p><a href="https://dados.gov.br/dados/conjuntos-dados/sismigra---sistema-de-registro-nacional-migratorio">Dados de Migração - SISMIGRA</a></p>
+<p>Para leitura e manipulação dos dados, foi utilizada a biblioteca <strong>pandas</strong>, amplamente utilizada em análise de dados.</p>
+<section id="tratamento-e-consolidação-dos-dados" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="tratamento-e-consolidação-dos-dados"><span class="header-section-number">2.1</span> Tratamento e Consolidação dos Dados</h2>
+<p>Após o carregamento, os dados foram enriquecidos com uma variável temporal e consolidados em uma única base.</p>
+<div id="7fa6a9cf" class="cell" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">UF</th>
+<th data-quarto-table-cell-role="th">NACIONALIDADE</th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD</th>
+<th data-quarto-table-cell-role="th">MES</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>SP</td>
+<td>BOLÍVIA</td>
+<td>Residente</td>
+<td>106567</td>
+<td>2026-01</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>SP</td>
+<td>INDIA</td>
+<td>Residente</td>
+<td>1445</td>
+<td>2026-01</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>SP</td>
+<td>ANGOLA</td>
+<td>Temporário</td>
+<td>8219</td>
+<td>2026-01</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>SP</td>
+<td>CHILE</td>
+<td>Residente</td>
+<td>15612</td>
+<td>2026-01</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>SP</td>
+<td>JAPÃO</td>
+<td>Residente</td>
+<td>36258</td>
+<td>2026-01</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Essa etapa permitiu a criação de uma base única e ordenada, facilitando análises temporais.</p>
+</section>
+<section id="construção-da-variável-de-fluxo-migratório" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="construção-da-variável-de-fluxo-migratório"><span class="header-section-number">2.2</span> Construção da Variável de Fluxo Migratório</h2>
+<p>Para permitir a análise da dinâmica de entrada de migrantes, foi criada a variável QTD_DIF, que representa a variação mensal dos registros, uma vez que descobrimos que o sistema da Polícia Federal registra o consolidado cumulado, e não o fluxo mensal.</p>
+<div id="e8debb2d" class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">UF</th>
+<th data-quarto-table-cell-role="th">NACIONALIDADE</th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD</th>
+<th data-quarto-table-cell-role="th">MES</th>
+<th data-quarto-table-cell-role="th">QTD_DIF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>SP</td>
+<td>BOLÍVIA</td>
+<td>Residente</td>
+<td>106567</td>
+<td>2026-01</td>
+<td>106567.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>SP</td>
+<td>INDIA</td>
+<td>Residente</td>
+<td>1445</td>
+<td>2026-01</td>
+<td>1445.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>SP</td>
+<td>ANGOLA</td>
+<td>Temporário</td>
+<td>8219</td>
+<td>2026-01</td>
+<td>8219.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>SP</td>
+<td>CHILE</td>
+<td>Residente</td>
+<td>15612</td>
+<td>2026-01</td>
+<td>15612.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>SP</td>
+<td>JAPÃO</td>
+<td>Residente</td>
+<td>36258</td>
+<td>2026-01</td>
+<td>36258.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>A variável QTD_DIF foi criada para representar a variação entre períodos consecutivos, permitindo a análise do fluxo mensal de entradas.</p>
+</section>
+<section id="classificação-do-comportamento-migratório" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="classificação-do-comportamento-migratório"><span class="header-section-number">2.3</span> Classificação do Comportamento Migratório</h2>
+<p>Com base nessa variável, foi proposta uma interpretação analítica do comportamento dos dados ao longo do tempo:</p>
+<p>CRESCIMENTO: aumento no número de registros ESTÁVEL: ausência de variação REDUÇÃO: diminuição no número de registros</p>
+<p>Essa classificação permite transformar os dados em informações analíticas, facilitando a identificação de padrões e tendências migratórias.</p>
+<div id="eda1d49f" class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">UF</th>
+<th data-quarto-table-cell-role="th">NACIONALIDADE</th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD</th>
+<th data-quarto-table-cell-role="th">MES</th>
+<th data-quarto-table-cell-role="th">QTD_DIF</th>
+<th data-quarto-table-cell-role="th">TIPO_MOVIMENTO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>SP</td>
+<td>BOLÍVIA</td>
+<td>Residente</td>
+<td>106567</td>
+<td>2026-01</td>
+<td>106567.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">1</th>
+<td>SP</td>
+<td>INDIA</td>
+<td>Residente</td>
+<td>1445</td>
+<td>2026-01</td>
+<td>1445.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">2</th>
+<td>SP</td>
+<td>ANGOLA</td>
+<td>Temporário</td>
+<td>8219</td>
+<td>2026-01</td>
+<td>8219.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3</th>
+<td>SP</td>
+<td>CHILE</td>
+<td>Residente</td>
+<td>15612</td>
+<td>2026-01</td>
+<td>15612.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">4</th>
+<td>SP</td>
+<td>JAPÃO</td>
+<td>Residente</td>
+<td>36258</td>
+<td>2026-01</td>
+<td>36258.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">5</th>
+<td>SP</td>
+<td>PORTUGAL</td>
+<td>Residente</td>
+<td>65778</td>
+<td>2026-01</td>
+<td>65778.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>SP</td>
+<td>BOLÍVIA</td>
+<td>Temporário</td>
+<td>36003</td>
+<td>2026-01</td>
+<td>36003.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">7</th>
+<td>SP</td>
+<td>CHINA</td>
+<td>Residente</td>
+<td>38309</td>
+<td>2026-01</td>
+<td>38309.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">8</th>
+<td>SP</td>
+<td>CORÉIA DO SUL</td>
+<td>Residente</td>
+<td>15895</td>
+<td>2026-01</td>
+<td>15895.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">9</th>
+<td>SP</td>
+<td>ALEMANHA</td>
+<td>Residente</td>
+<td>10017</td>
+<td>2026-01</td>
+<td>10017.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="análise-descritiva" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Análise Descritiva</h1>
+<p>O conjunto de dados está estruturado com as seguintes variáveis:</p>
+<ul>
+<li><strong>UF</strong>: Unidade da Federação</li>
+<li><strong>NACIONALIDADE</strong>: País de origem do migrante</li>
+<li><strong>CLASSIFICACAO</strong>: Tipo de permanência</li>
+<li><strong>QTD</strong>: Quantidade acumulada</li>
+<li><strong>MES</strong>: Referência temporal</li>
+<li><strong>QTD_DIF</strong>: Variação mensal (fluxo estimado)</li>
+<li><strong>TIPO_MOVIMENTO</strong>: Classificação do movimento (CRESCIMENTO, ESTÁVEL, REDUÇÃO)</li>
+</ul>
+</section>
+<section id="análise-de-migração-para-o-espírito-santo" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Análise de Migração para o Espírito Santo</h1>
+<p>O mapa evidencia a distribuição do fluxo migratório no território brasileiro, destacando o estado do Espírito Santo. Observa-se que, embora não esteja entre os estados com maior volume absoluto, o Espírito Santo apresenta-se como destino relevante para migração. mapa:</p>
+<div id="d13f0730" class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="relatorio_files/figure-html/cell-6-output-1.png" width="544" height="410" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Inicialmente, os dados foram filtrados para o estado do Espírito Santo, permitindo uma análise mais focada e detalhada sobre as dinâmicas migratórias específicas do Estado.</p>
+<div id="8889fcc7" class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">UF</th>
+<th data-quarto-table-cell-role="th">NACIONALIDADE</th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD</th>
+<th data-quarto-table-cell-role="th">MES</th>
+<th data-quarto-table-cell-role="th">QTD_DIF</th>
+<th data-quarto-table-cell-role="th">TIPO_MOVIMENTO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3620</th>
+<td>ES</td>
+<td>CUBA</td>
+<td>Residente</td>
+<td>266</td>
+<td>2026-01</td>
+<td>266.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3621</th>
+<td>ES</td>
+<td>ESTADOS UNIDOS</td>
+<td>Residente</td>
+<td>415</td>
+<td>2026-01</td>
+<td>415.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3622</th>
+<td>ES</td>
+<td>VENEZUELA</td>
+<td>Temporário</td>
+<td>919</td>
+<td>2026-01</td>
+<td>919.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3623</th>
+<td>ES</td>
+<td>TUNÍSIA</td>
+<td>Residente</td>
+<td>10</td>
+<td>2026-01</td>
+<td>10.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3624</th>
+<td>ES</td>
+<td>PORTUGAL</td>
+<td>Residente</td>
+<td>1162</td>
+<td>2026-01</td>
+<td>1162.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Em seguida, os registros foram ordenados com base no fluxo migratório:</p>
+<div id="2f11d2e8" class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">UF</th>
+<th data-quarto-table-cell-role="th">NACIONALIDADE</th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD</th>
+<th data-quarto-table-cell-role="th">MES</th>
+<th data-quarto-table-cell-role="th">QTD_DIF</th>
+<th data-quarto-table-cell-role="th">TIPO_MOVIMENTO</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3626</th>
+<td>ES</td>
+<td>VENEZUELA</td>
+<td>Residente</td>
+<td>1238</td>
+<td>2026-01</td>
+<td>1238.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3624</th>
+<td>ES</td>
+<td>PORTUGAL</td>
+<td>Residente</td>
+<td>1162</td>
+<td>2026-01</td>
+<td>1162.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3622</th>
+<td>ES</td>
+<td>VENEZUELA</td>
+<td>Temporário</td>
+<td>919</td>
+<td>2026-01</td>
+<td>919.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">3636</th>
+<td>ES</td>
+<td>ITÁLIA</td>
+<td>Residente</td>
+<td>762</td>
+<td>2026-01</td>
+<td>762.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">3629</th>
+<td>ES</td>
+<td>COLÔMBIA</td>
+<td>Residente</td>
+<td>702</td>
+<td>2026-01</td>
+<td>702.0</td>
+<td>CRESCIMENTO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">...</th>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10888</th>
+<td>ES</td>
+<td>EQUADOR</td>
+<td>Temporário</td>
+<td>16</td>
+<td>2026-02</td>
+<td>-2.0</td>
+<td>REDUÇÃO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">10868</th>
+<td>ES</td>
+<td>CHINA</td>
+<td>Residente</td>
+<td>320</td>
+<td>2026-02</td>
+<td>-2.0</td>
+<td>REDUÇÃO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">11010</th>
+<td>ES</td>
+<td>GANA</td>
+<td>Temporário</td>
+<td>4</td>
+<td>2026-02</td>
+<td>-3.0</td>
+<td>REDUÇÃO</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">11061</th>
+<td>ES</td>
+<td>NIGÉRIA</td>
+<td>Temporário</td>
+<td>3</td>
+<td>2026-02</td>
+<td>-3.0</td>
+<td>REDUÇÃO</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">10862</th>
+<td>ES</td>
+<td>COLÔMBIA</td>
+<td>Temporário</td>
+<td>477</td>
+<td>2026-02</td>
+<td>-5.0</td>
+<td>REDUÇÃO</td>
+</tr>
+</tbody>
+</table>
+
+<p>475 rows × 7 columns</p>
+</div>
+</div>
+</div>
+<p>A análise evidencia que o estado do Espírito Santo, durante os meses de Janeiro à Fevereiro, predominância de crescimento migratório, com destaque para: Venezuela,Portugal e Itália. Sendo estes os países que deram entrada de Residentes.</p>
+<div id="1bebedc9" class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">CLASSIFICACAO</th>
+<th data-quarto-table-cell-role="th">QTD_DIF</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1</th>
+<td>Residente</td>
+<td>9233.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2</th>
+<td>Temporário</td>
+<td>2522.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0</th>
+<td>Provisório</td>
+<td>395.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Observa-se que a dinâmica migratória no Estado do Espírito Santo não é homogênea, variando conforme nacionalidade e tipo de permanência.</p>
+<div id="f5aef2e2" class="cell" data-execution_count="9">
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="relatorio_files/figure-html/cell-10-output-1.png" width="602" height="451" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 
 </main>
@@ -108,12 +693,12 @@ ul.task-list li input[type="checkbox"] {
       // flash "checked"
       button.classList.add('code-copy-button-checked');
       var currentTitle = button.getAttribute("title");
-      button.setAttribute("title", "Copied!");
+      button.setAttribute("title", "Copiada");
       let tooltip;
       if (window.bootstrap) {
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
-        button.setAttribute("data-bs-title", "Copied!");
+        button.setAttribute("data-bs-title", "Copiada");
         tooltip = new bootstrap.Tooltip(button, 
           { trigger: "manual", 
             customClass: "code-copy-button-tooltip",

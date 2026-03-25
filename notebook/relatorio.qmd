@@ -1,11 +1,199 @@
 ---
-title: "Análise de Migração - Polícia Federal"
-author: "Seu nome"
-format: html
+title: "Destino Espírito Santo: um breve estudo sobre imigração a partir de dados da Polícia Federal."
+author: "Lucas Barros"
+lang: pt-BR
+
+format: 
+    html:
+        theme: cosmo
+        toc: true
+        toc-depth: 2
+        number-sections: true
+        responsive: true
+code-fold: false
+
+execute: 
+  echo: false
+  
+engine: python
+
 ---
 
-## Introdução
+# Introdução
 
-Este relatório apresenta a análise dos dados do SISMIGRA...
+Este relatório apresenta uma análise dos dados de migração da Polícia Federal (SISMIGRA), com foco no estado do Espírito Santo.
 
-## Carregamento dos dados
+O presente relatório possui apenas objetivo didático, para fins de estudo de Análise Exploratória de Dados (EDA) e não deve ser utilizado para fins comerciais ou de tomada de decisão.
+
+Os dados utilizados neste relatório foram obtidos a partir do portal de dados abertos do governo brasileiro, e estão disponíveis para consulta pública, apartir do link (https://dados.gov.br/dados/conjuntos-dados/sismigra---sistema-de-registro-nacional-migratorio)
+
+--- **Fonte dos dados**: SISMIGRA - Sistema de Registro Nacional Migratório
+
+--- **Período analisado**: Janeiro e Fevereiro de 2026
+
+---
+
+# Carregamento dos dados
+
+Os dados foram carregados a partir de arquivos CSV disponibilizados no portal de dados abertos:
+
+[Dados de Migração - SISMIGRA](https://dados.gov.br/dados/conjuntos-dados/sismigra---sistema-de-registro-nacional-migratorio)
+
+Para leitura e manipulação dos dados, foi utilizada a biblioteca **pandas**, amplamente utilizada em análise de dados.
+
+
+```{python}
+import pandas as pd
+
+df_sismigra_jan = pd.read_csv('../dataset/SISMIGRA_REGISTROS_ATIVOS_2026_01.csv', sep=';', encoding='UTF-8')
+df_sismigra_fev = pd.read_csv('../dataset/SISMIGRA_REGISTROS_ATIVOS_2026_02.csv', sep=';', encoding='UTF-8')
+
+```
+
+## Tratamento e Consolidação dos Dados
+
+Após o carregamento, os dados foram enriquecidos com uma variável temporal e consolidados em uma única base.
+
+```{python}
+df_sismigra_jan['MES'] = pd.Period('2026-01', freq='M')
+df_sismigra_fev['MES'] = pd.Period('2026-02', freq='M')
+
+df_sismigra_total = pd.concat([df_sismigra_jan, df_sismigra_fev], ignore_index=True)
+
+df_sismigra_total = df_sismigra_total.sort_values('MES')
+df_sismigra_total.head()
+```
+
+Essa etapa permitiu a criação de uma base única e ordenada, facilitando análises temporais.
+
+## Construção da Variável de Fluxo Migratório
+Para permitir a análise da dinâmica de entrada de migrantes, foi criada a variável QTD_DIF, que representa a variação mensal dos registros, uma vez que descobrimos que o sistema da Polícia Federal registra o consolidado cumulado, e não o fluxo mensal.
+
+```{python}
+df_sismigra_total['QTD_DIF'] = df_sismigra_total.groupby(
+    ['UF', 'NACIONALIDADE', 'CLASSIFICACAO']
+)['QTD'].diff()
+
+df_sismigra_total['QTD_DIF'] = df_sismigra_total['QTD_DIF'].fillna(df_sismigra_total['QTD'])
+df_sismigra_total.head()
+```
+
+A variável QTD_DIF foi criada para representar a variação entre períodos consecutivos, permitindo a análise do fluxo mensal de entradas.
+
+## Classificação do Comportamento Migratório
+Com base nessa variável, foi proposta uma interpretação analítica do comportamento dos dados ao longo do tempo:
+
+CRESCIMENTO: aumento no número de registros
+ESTÁVEL: ausência de variação
+REDUÇÃO: diminuição no número de registros
+
+Essa classificação permite transformar os dados em informações analíticas, facilitando a identificação de padrões e tendências migratórias.
+
+
+```{python}
+df_sismigra_total['TIPO_MOVIMENTO'] = 'ESTÁVEL'
+
+df_sismigra_total.loc[df_sismigra_total['QTD_DIF'] > 0, 'TIPO_MOVIMENTO'] = 'CRESCIMENTO'
+
+df_sismigra_total.loc[df_sismigra_total['QTD_DIF'] < 0, 'TIPO_MOVIMENTO'] = 'REDUÇÃO'
+df_sismigra_total.head(10)
+
+```
+
+# Análise Descritiva
+O conjunto de dados está estruturado com as seguintes variáveis:
+
+* **UF**: Unidade da Federação
+* **NACIONALIDADE**: País de origem do migrante
+* **CLASSIFICACAO**: Tipo de permanência
+* **QTD**: Quantidade acumulada
+* **MES**: Referência temporal
+* **QTD_DIF**: Variação mensal (fluxo estimado)
+* **TIPO_MOVIMENTO**: Classificação do movimento (CRESCIMENTO, ESTÁVEL, REDUÇÃO)
+
+
+# Análise de Migração para o Espírito Santo
+O mapa evidencia a distribuição do fluxo migratório no território brasileiro, destacando o estado do Espírito Santo. Observa-se que, embora não esteja entre os estados com maior volume absoluto, o Espírito Santo apresenta-se como destino relevante para migração.
+mapa:
+```{python}
+
+#| echo: false
+import geopandas as gpd
+import matplotlib.pyplot as plt
+
+# Carregar mapa dos estados (seu geojson já existe no projeto)
+gdf = gpd.read_file('brazil-states.geojson')
+
+# Padronizar UF (importante!)
+gdf['sigla'] = gdf['sigla'].str.upper()
+
+# Agregar dados por estado
+df_mapa = df_sismigra_total.groupby('UF')['QTD_DIF'].sum().reset_index()
+
+# Merge com o mapa
+gdf = gdf.merge(df_mapa, left_on='sigla', right_on='UF', how='left')
+
+# Preencher nulos
+gdf['QTD_DIF'] = gdf['QTD_DIF'].fillna(0)
+
+# Criar destaque
+gdf['destaque'] = gdf['sigla'] == 'ES'
+
+# Plot
+fig, ax = plt.subplots()
+
+gdf.plot(column='QTD_DIF', cmap='Blues', legend=True, ax=ax)
+
+# Destacar ES em vermelho
+gdf[gdf['destaque']].plot(ax=ax)
+
+plt.title('Fluxo Migratório por Estado - Destaque para Espírito Santo')
+
+plt.axis('off')
+plt.show()
+```
+
+Inicialmente, os dados foram filtrados para o estado do Espírito Santo, permitindo uma análise mais focada e detalhada sobre as dinâmicas migratórias específicas do Estado.
+```{python}
+df_es = df_sismigra_total[df_sismigra_total['UF'] == 'ES']
+df_es.head()
+
+```
+
+Em seguida, os registros foram ordenados com base no fluxo migratório:
+
+```{python}
+df_es = df_sismigra_total.loc[df_sismigra_total['UF'] == 'ES'].sort_values(
+    by='QTD_DIF', ascending=False
+    )
+display(df_es)
+```
+
+A análise evidencia que o estado do Espírito Santo, durante os meses de Janeiro à Fevereiro, predominância de crescimento migratório, com destaque para: Venezuela,Portugal e Itália. Sendo estes os países que deram entrada de Residentes.
+
+
+```{python}
+
+df_classificacao = df_es.groupby('CLASSIFICACAO')['QTD_DIF'].sum().reset_index().sort_values(by='QTD_DIF', ascending=False)
+df_classificacao
+
+```
+
+Observa-se que a dinâmica migratória no Estado do Espírito Santo não é homogênea, variando conforme nacionalidade e tipo de permanência.
+
+
+```{python}
+
+import matplotlib.pyplot as plt
+
+plt.figure()
+plt.bar(df_classificacao['CLASSIFICACAO'], df_classificacao['QTD_DIF'])
+plt.title('Fluxo Migratório por Tipo de Permanência - ES')
+plt.xlabel('Classificação')
+plt.ylabel('Fluxo Migratório')
+
+plt.show()
+
+```
+
+

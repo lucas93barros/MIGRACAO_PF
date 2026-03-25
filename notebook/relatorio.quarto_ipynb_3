@@ -1,0 +1,190 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Análise de Dados de Migração: um breve estudo sobre migração para o Espírito Santo, apartir de base de dados da Polícia Federal\"\n",
+        "author: \"Lucas Barros\"\n",
+        "format: html\n",
+        "jupyter: migracao-pf\n",
+        "---\n",
+        "\n",
+        "## Introdução\n",
+        "\n",
+        "Este relatório apresenta uma análise dos dados de migração da Polícia Federal (SISMIGRA), com foco no estado do Espírito Santo.\n",
+        "\n",
+        "O presente relatório possui apenas objetivo didático, para fins de estudo de Análise Exploratória de Dados (EDA) e não deve ser utilizado para fins comerciais ou de tomada de decisão.\n",
+        "\n",
+        "Os dados utilizados neste relatório foram obtidos a partir do portal de dados abertos do governo brasileiro, e estão disponíveis para consulta pública, apartir do link (https://dados.gov.br/dados/conjuntos-dados/sismigra---sistema-de-registro-nacional-migratorio)\n",
+        "\n",
+        "--- **Fonte dos dados**: SISMIGRA - Sistema de Registro Nacional Migratório\n",
+        "\n",
+        "--- **Período analisado**: Janeiro e Fevereiro de 2026\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Carregamento dos dados\n",
+        "\n",
+        "Os dados foram carregados a partir de arquivos CSV disponibilizados no portal de dados abertos:\n",
+        "\n",
+        "[Dados de Migração - SISMIGRA](https://dados.gov.br/dados/conjuntos-dados/sismigra---sistema-de-registro-nacional-migratorio)\n",
+        "\n",
+        "Para leitura e manipulação dos dados, foi utilizada a biblioteca **pandas**, amplamente utilizada em análise de dados.\n"
+      ],
+      "id": "4e0aada4"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "import pandas as pd\n",
+        "\n",
+        "df_sismigra_jan = pd.read_csv('../dataset/SISMIGRA_REGISTROS_ATIVOS_2026_01.csv', sep=';', encoding='UTF-8')\n",
+        "df_sismigra_fev = pd.read_csv('../dataset/SISMIGRA_REGISTROS_ATIVOS_2026_02.csv', sep=';', encoding='UTF-8')"
+      ],
+      "id": "eaf3ed4d",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Tratamento e Consolidação dos Dados\n",
+        "\n",
+        "Após o carregamento, os dados foram enriquecidos com uma variável temporal e consolidados em uma única base."
+      ],
+      "id": "50e6c910"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_sismigra_jan['MES'] = pd.Period('2026-01', freq='M')\n",
+        "df_sismigra_fev['MES'] = pd.Period('2026-02', freq='M')\n",
+        "\n",
+        "df_sismigra_total = pd.concat([df_sismigra_jan, df_sismigra_fev], ignore_index=True)\n",
+        "\n",
+        "df_sismigra_total = df_sismigra_total.sort_values('MES')\n",
+        "df_sismigra_total.head()"
+      ],
+      "id": "8e50a5e4",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Construção da Variável de Fluxo Migratório\n",
+        "Para permitir a análise da dinâmica de entrada de migrantes, foi criada a variável QTD_DIF, que representa a variação mensal dos registros, uma vez que descobrimos que o sistema da Polícia Federal registra o consolidado cumulado, e não o fluxo mensal."
+      ],
+      "id": "0cd8df4c"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_sismigra_total['QTD_DIF'] = df_sismigra_total.groupby(\n",
+        "    ['UF', 'NACIONALIDADE', 'CLASSIFICACAO']\n",
+        ")['QTD'].diff()\n",
+        "\n",
+        "df_sismigra_total['QTD_DIF'] = df_sismigra_total['QTD_DIF'].fillna(df_sismigra_total['QTD'])\n",
+        "df_sismigra_total.head()"
+      ],
+      "id": "d5fe8fff",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "Essa abordagem nos permitiu transformar dados acumulados em fluxo mensal, o que é mais adequado para análises temporais.\n",
+        "\n",
+        "\n",
+        "A variável QTD_DIF foi criada para representar a variação entre períodos consecutivos, permitindo a análise do fluxo mensal de entradas.\n",
+        "\n",
+        "Com base nessa variável, foi proposta uma interpretação analítica do comportamento dos dados ao longo do tempo:\n",
+        "\n",
+        "CRESCIMENTO: aumento no número de registros\n",
+        "ESTÁVEL: ausência de variação\n",
+        "REDUÇÃO: diminuição no número de registros\n",
+        "\n",
+        "Essa classificação permite transformar os dados em informações analíticas, facilitando a identificação de padrões e tendências migratórias.\n"
+      ],
+      "id": "b6874312"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_sismigra_total['TIPO_MOVIMENTO'] = 'ESTÁVEL'\n",
+        "\n",
+        "df_sismigra_total.loc[df_sismigra_total['QTD_DIF'] > 0, 'TIPO_MOVIMENTO'] = 'CRESCIMENTO'\n",
+        "\n",
+        "df_sismigra_total.loc[df_sismigra_total['QTD_DIF'] < 0, 'TIPO_MOVIMENTO'] = 'REDUÇÃO'\n",
+        "df_sismigra_total.head(10)"
+      ],
+      "id": "e2e1652f",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## Análise Descritiva\n",
+        "O conjunto de dados está estruturado com as seguintes variáveis:\n",
+        "\n",
+        "UF: Unidade da Federação\n",
+        "NACIONALIDADE: País de origem do migrante\n",
+        "CLASSIFICACAO: Tipo de permanência\n",
+        "QTD: Quantidade acumulada\n",
+        "MES: Referência temporal\n",
+        "QTD_DIF: Variação mensal (fluxo estimado)\n",
+        "TIPO_MOVIMENTO: Classificação do movimento (CRESCIMENTO, ESTÁVEL, REDUÇÃO)\n",
+        "\n",
+        "\n",
+        "## Análise de Migração para o Espírito Santo"
+      ],
+      "id": "d507fa7a"
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_es = df_sismigra_total[df_sismigra_total['UF'] == 'ES']\n",
+        "df_es.head()\n"
+      ],
+      "id": "86d881d3",
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {},
+      "source": [
+        "df_es = df_sismigra_total.loc[df_sismigra_total['UF'] == 'ES'].sort_values(\n",
+        "    by='QTD_DIF', ascending=False\n",
+        "    )\n",
+        "display(df_es)"
+      ],
+      "id": "37490b65",
+      "execution_count": null,
+      "outputs": []
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "migracao-pf",
+      "language": "python",
+      "display_name": "Python (migracao-pf)",
+      "path": "C:\\Users\\lhbarros\\AppData\\Roaming\\jupyter\\kernels\\migracao-pf"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}

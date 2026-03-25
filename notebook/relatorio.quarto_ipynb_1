@@ -1,0 +1,32 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "---\n",
+        "title: \"Teste\"\n",
+        "format: html\n",
+        "jupyter: migracao-pf\n",
+        "---\n",
+        "\n",
+        "---\n",
+        "\n",
+        "## Teste\n",
+        "\n",
+        "print(\"Quarto funcionando 🚀\")\n"
+      ],
+      "id": "5259125d"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "name": "migracao-pf",
+      "language": "python",
+      "display_name": "Python (migracao-pf)",
+      "path": "C:\\Users\\lhbarros\\AppData\\Roaming\\jupyter\\kernels\\migracao-pf"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
