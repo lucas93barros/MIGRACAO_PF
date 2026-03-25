@@ -19,4 +19,3 @@ Analisar o comportamento migratório no ES, identificando padrões por nacionali
 ## 🌐 Acesse o relatório
 👉 https://lucas93barros.github.io/MIGRACAO_PF/
 
-## 📁 Estrutura do projeto
